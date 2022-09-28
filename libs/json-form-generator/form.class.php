@@ -53,7 +53,29 @@ class Form {
      */
     public function load($filePath){
         $data = json_decode(file_get_contents($filePath), true);
-        
+        switch (json_last_error()) {
+            case JSON_ERROR_NONE:
+                echo '';
+            break;
+            case JSON_ERROR_DEPTH:
+                echo ' - Достигнута максимальная глубина стека';
+            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                echo ' - Некорректные разряды или несоответствие режимов';
+            break;
+            case JSON_ERROR_CTRL_CHAR:
+                echo ' - Некорректный управляющий символ';
+            break;
+            case JSON_ERROR_SYNTAX:
+                echo ' - Синтаксическая ошибка, некорректный JSON';
+            break;
+            case JSON_ERROR_UTF8:
+                echo ' - Некорректные символы UTF-8, возможно неверно закодирован';
+            break;
+            default:
+                echo ' - Неизвестная ошибка';
+            break;
+        }
         if($data){
             $this->json = $data;
             
@@ -194,9 +216,9 @@ class Form {
         
         $this->html = '<form name="'.$data['name'].'" method="'.$data['method'].'" action="'.$data['action'].'"';
         
-        if($data['enctype']){ $this->html .= ' enctype="'.$data['enctype'].'"'; }
-        if($data['target']){ $this->html .= ' target="'.$data['target'].'"'; }
-        if($data['autocomplete']){ $this->html .= ' autocomplete="'.$data['autocomplete'].'"'; }
+        if(isset($data['enctype'])){ $this->html .= ' enctype="'.$data['enctype'].'"'; }
+        if(isset($data['target'])){ $this->html .= ' target="'.$data['target'].'"'; }
+        if(isset($data['autocomplete'])){ $this->html .= ' autocomplete="'.$data['autocomplete'].'"'; }
         
         $this->html .= '>';
         
